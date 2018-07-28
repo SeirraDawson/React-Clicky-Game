@@ -1,63 +1,105 @@
 import React, { Component } from 'react';
-import './App.css';
 import Card from "./components/Card";
 import Title from "./components/Title";
 import Wrapper from "./components/Wrapper";
 import cartoons from "./cartoons.json";
+import './App.css';
+
 
 class App extends Component {
   // Setting this.state.cartoons to the cartoons json array && state to 0 or empty
   state = {
     cartoons,
     score: 0,
-    highscore: 0
+    highScore: 0,
+    clickedCartoons: []
   };
 
+  clickedImg = id => {
+    // assign the state to 'let' so updates can be made
+    // let score = this.state.score;
+    // let highScore = this.state.highScore
+    let clickedCartoons = this.state.clickedCartoons;
+
+    // if clickedCartoon has an id of the indexed cartoons
+    if (clickedCartoons.indexOf(id) === -1) {
+      // push the id into the array to be stored
+      clickedCartoons.push(id);
+      console.log(clickedCartoons);
+      // increment score
+      this.handleIncrement();
+      // shuffleImg
+      this.shuffleImg();
+    } else if (this.state.score === 12) {
+      alert("You Won! You had no repeat clicked cartoons!")
+      this.setState({
+        score: 0,
+        clickedCartoons: []
+      });
+    } else {
+      this.gameOver();
+    }
+  }
+
+
+  // Increase score function || handleIncrement increases this.state.count by 1
+  handleIncrement = () => {
+    // We always use the setState method to update a component's state
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  // resetScore && shuffle images
+    // reset = () => {
+    //   this.setState({ score: 0 })
+    // }
+  shuffleImg = () => {
+    this.setState({cartoons: this.rearrangeImg(cartoons)})
+  }
+
+  // rearrangeImg
+  rearrangeImg = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  // gameOver function
   gameOver = () => {
-    if (this.state.score > this.state.highscore) {
-      this.setState({highscore: this.state.score}, () => {
-        console.log(this.state.highscore);
+    if (this.state.score > this.state.highScore) {
+      this.setState({highScore: this.state.score}, () => {
+        console.log(this.state.highScore);
       });
     }
     this.state.cartoons.forEach(card => {
       card.count = 0;
     });
-    alert(`Game Over: (\nscore: ${this.state.score}`);
+    alert(`Game Over! \nYour score: ${this.state.score}`);
     this.setState({score: 0});
     return true;
   }
 
-  clickCount = id => {
-    this.state.cartoons.find((o, i) => {
-      if (o.id === id) {
-        if(cartoons[i].count === 0) {
-          cartoons[i].count = cartoons[i].count + 1;
-          this.setState({score: this.state.score +1}, () => {
-            console.log(this.state.score);
-          });
-          this.state.cartoons.sort( () => Math.random() - 0.5)
-          return true;
-        } else {
-          this.gameOver();
-        }
-      }
-    });
-  }
 
   // Map over this.state.cartoons and render a Card component for each cartoon object
   render () {
     return(
+      <div>
       <Wrapper>
-        <Title score={this.state.score} highscore={this.state.highscore}>Clicky Game</Title>
+        <Title
+        score={this.state.score}
+        highScore={this.state.highScore}>
+        Clicky Game</Title>
           {this.state.cartoons.map (card => (
             <Card
-              clickCount={this.clickCount}
-              id={card.id}
               key={card.id}
-              image={card.image}
+              id={card.id}
+              name={card.name}
+              clickedImg={this.clickedImg}
               />
           ))}
-      </Wrapper>
+      </Wrapper>s
+      </div>
     );
   }
 }

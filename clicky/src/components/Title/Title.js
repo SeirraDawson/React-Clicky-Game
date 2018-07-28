@@ -6,8 +6,8 @@ const Title = props => (
     <div className="title">{props.children}
     </div>
     <div className="scores">
-    Score: {props.score}
-    High Score: {props.highscore}
+    <p> Score: {props.score} </p>
+    <p> High Score: {props.highScore}</p>
     </div>
   </div>
 );
