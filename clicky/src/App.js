@@ -42,10 +42,10 @@ class App extends Component {
   }
 
 
-  // Increase score function || handleIncrement increases this.state.count by 1
+  // Increase score function || handleIncrement increases this.state.score by 1
   handleIncrement = () => {
     // We always use the setState method to update a component's state
-    this.setState({ count: this.state.count + 1 });
+    this.setState({ score: this.state.score + 1 });
   };
 
   // resetScore && shuffle images
@@ -88,7 +88,8 @@ class App extends Component {
       <Wrapper>
         <Title
         score={this.state.score}
-        highScore={this.state.highScore}>
+        highScore={this.state.highScore}
+        message={this.state.message}>
         Clicky Game</Title>
           {this.state.cartoons.map (card => (
             <Card
@@ -96,6 +97,7 @@ class App extends Component {
               id={card.id}
               name={card.name}
               clickedImg={this.clickedImg}
+              image={card.image}
               />
           ))}
       </Wrapper>s
